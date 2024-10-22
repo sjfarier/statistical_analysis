@@ -1,0 +1,343 @@
+---
+title: "T-Test"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Background
+
+Used to compare the mean of a sample to a known value or between two groups to determine if their means are significantly different.
+
+-   One-Sample T-Test: Compares the sample mean to a known or hypothesized population mean.
+-   Independent T-Test: Compares the means of two independent groups.
+-   Paired T-Test: Compares means from the same group at two different times (before/after) or under two different conditions.
+
+# Requirements
+
+To perform a valid **t-test**, certain assumptions and requirements must be met depending on the type of t-test (one-sample, independent, or paired). The general requirements for any t-test include the following:
+
+### 1. **Scale of Measurement**
+
+-   The dependent variable should be **continuous** (interval or ratio scale). The t-test compares means, so the data must be numerical.
+
+### 2. **Random Sampling**
+
+-   The sample should be drawn from the population **randomly** to ensure that the results are representative of the population and that biases are minimized.
+
+### 3. **Independence**
+
+-   Observations must be **independent** of each other.
+
+    -   For an **independent t-test**, this means the two groups being compared should not be related or influence each other.
+
+    -   For a **paired t-test**, the paired observations (e.g., pre-test and post-test) should be related but independent of other pairs.
+
+### 4. **Normality**
+
+-   The data for each group (or the differences in a paired t-test) should be **approximately normally distributed**. This assumption is more critical for small sample sizes (n \< 30), but the t-test is fairly robust to violations of normality with larger sample sizes due to the **Central Limit Theorem**.
+
+### 5. **Homogeneity of Variance (for Independent T-Test)**
+
+-   The variances of the two groups should be **equal** (also called homoscedasticity). This assumption is tested by **Levene's Test**.
+
+-   If the assumption of equal variances is violated, a modified version of the t-test, known as **Welch's t-test**, can be used.
+
+### 6. **Sample Size**
+
+-   The t-test is most appropriate when the sample size is moderate (n \> 30) for normal data. For smaller sample sizes, the assumption of normality becomes more important.
+
+### 7. **No Significant Outliers**
+
+-   Outliers can heavily influence the results of a t-test, so it is important to check for and address significant outliers before performing the test. Outliers may affect the normality assumption and distort the mean.
+
+# Code Used
+
+## T-test function
+
+To conduct a one-sample t-test in R, we use the syntax `t.test(v, mu = 0)` where `v` is the name of our vector of interest and `mu` is set equal to the mean specified by the null hypothesis.
+
+The t.test function is part of base R. No package needs to be loaded.
+
+```         
+t.test(x, y = NULL,
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+```
+
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `x`           | a (non-empty) numeric vector of data values.                                                                                                                                                                                                                                        |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `y`           | an optional (non-empty) numeric vector of data values.                                                                                                                                                                                                                              |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `alternative` | a character string specifying the alternative hypothesis, must be one of `"two.sided"` (default), `"greater"` or `"less"`. You can specify just the initial letter.                                                                                                                 |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `mu`          | a number indicating the true value of the mean (or difference in means if you are performing a two sample test).                                                                                                                                                                    |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `paired`      | a logical indicating whether you want a paired t-test.                                                                                                                                                                                                                              |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `var.equal`   | a logical variable indicating whether to treat the two variances as being equal. If `TRUE` then the pooled variance is used to estimate the variance otherwise the Welch (or Satterthwaite) approximation to the degrees of freedom is used.                                        |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `conf.level`  | confidence level of the interval.                                                                                                                                                                                                                                                   |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `formula`     | a formula of the form `lhs ~ rhs` where `lhs` is a numeric variable giving the data values and `rhs` either `1` for a one-sample or paired test or a factor with two levels giving the corresponding groups. If `lhs` is of class `"Pair"` and `rhs` is `1`, a paired test is done. |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `data`        | an optional matrix or data frame (or similar: see [`model.frame`](http://127.0.0.1:8315/help/library/stats/help/model.frame)) containing the variables in the formula `formula`. By default the variables are taken from `environment(formula)`.                                    |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `subset`      | an optional vector specifying a subset of observations to be used.                                                                                                                                                                                                                  |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `na.action`   | a function which indicates what should happen when the data contain `NA`s. Defaults to `getOption("na.action")`.                                                                                                                                                                    |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `...`         | further arguments to be passed to or from methods                                                                                                                                                                                                                                   |
++---------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+## Sample
+
+A sample of a vector can be obtained by using `sample(x, size, replace = FALSE, prob = NULL)`. The code shows the defaults for `replace` and `prob` and details on each argument can be found in the following table.
+
+### `Sample` Arguments
+
++-----------------+-----------------------------------------------------------------------------------------------------+
+| `x`             | either a vector of one or more elements from which to choose, or a positive integer. See 'Details.' |
++-----------------+-----------------------------------------------------------------------------------------------------+
+| `n`             | a positive number, the number of items to choose from. See 'Details.'                               |
++-----------------+-----------------------------------------------------------------------------------------------------+
+| `size`          | a non-negative integer giving the number of items to choose.                                        |
++-----------------+-----------------------------------------------------------------------------------------------------+
+| `replace`       | should sampling be with replacement?                                                                |
++-----------------+-----------------------------------------------------------------------------------------------------+
+| `prob`          | a vector of probability weights for obtaining the elements of the vector being sampled.             |
++-----------------+-----------------------------------------------------------------------------------------------------+
+
+`v = sample(vector, n, replace = FALSE, prob = NULL)` will produce a vector of the desired sample length for our test if desired.
+
+## Levene's Test
+
+From the `car` package we have `leveneTest` which allows us to enter a formula for a linear model in the basic form of `y ~ x`. Where:
+
+-   `y` is the data of interest
+-   `x` is the grouping variable
+
+`car::leveneTest(y ~ x, data = df, center = mean)` (The vignette explains that using `mean = median` provides a more robust test.)
+
+Use `?car::LeveneTest` to find out more.
+
+## Normality Test (Shapiro-Wilk)
+
+The normality test in R uses the base function `shapiro.test(x)` which accepts a vector x and outputs a test result that allows us to determine if the data in the vector supplied is sufficiently normally distributed. However, one would have to place each vector of interest into the function and separately compute the result.
+
+The null hypothesis is that the sample of data comes from a normal distribution.
+
+However, there are pipe-friendly ways to do this. First, with the visual methods.
+
+### **Visual methods**
+
+**Density plot** and **Q-Q plot** can be used to check normality visually.
+
+1.  **Density plot**: the density plot provides a visual judgment about whether the distribution is bell shaped.
+
+2.  **QQ plot**: QQ plot (or quantile-quantile plot) draws the correlation between a given sample and the normal distribution. A 45-degree reference line is also plotted. In a QQ plot, each observation is plotted as a single dot. If the data are normal, the dots should form a straight line.
+
+Density Plots can be obtained using the `ggpubr` package: `ggpubr::ggdensity(vector, fill = "black")`
+
+Q-Q plots can be obtained by `ggqqplot(vector)` from the same package.
+
+Now, to perform the shapiro test on multiple groups in a dataframe we used the `shapiro_test` function from the `rstatix` package. The the same understanding as before that `y` contains the numerical data of interest and `x` is the grouping variable.
+
+```         
+df |> 
+  group_by(x) |> 
+  rstatix::shapiro_test(y)
+```
+
+## Outliers
+
+Boxplots can be used to visually detect outliers. Base R and `ggplot2` provide means of doing this.
+
+Using the pre-loaded `graphics` package
+
+```         
+boxplot(
+  y ~ x,
+  data = df,
+  xlab = "X-Varname",
+  ylab = "Y-Varname"
+)
+```
+
+Using `ggplot2`:
+
+```         
+df |> 
+  ggplot(
+    mapping = aes(x, y, fill = x)
+  )+
+  geom_boxplot()
+```
+
+# Data and Testing Requirements
+
+We can use the Iris dataset, accessed through the command `data("iris")`, for which the description is:
+
+> This famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.
+
+```{r setup}
+library(dplyr)
+library(ggplot2)
+data("iris")
+data("InsectSprays")
+```
+
+```{r iris data}
+iris |> sample_n(20) |> 
+  knitr::kable(caption = "Sample of the Iris Dataset") |> 
+  kableExtra::kable_paper("hover", full_width = TRUE)
+```
+
+Let's test for normality.
+
+```{r normality iris}
+iris |> 
+  group_by(Species) |> 
+  rstatix::shapiro_test(Sepal.Length) |> 
+  knitr::kable(
+    caption = "Normality Test Results for Different Groups of Sepal Lengths"
+  ) |> 
+  kableExtra::kable_paper("hover", full_width = TRUE)
+```
+
+None of the results are statistically significant, so we assume normality within each group and carry on.
+
+We can also do Q-Q Plots:
+
+```{r iris qq}
+iris |> 
+  ggplot(mapping = aes(sample = Sepal.Length)) +
+  geom_qq()+
+  stat_qq_line()+
+  facet_grid(. ~ Species)
+```
+
+and boxplots
+
+```{r iris boxplots}
+iris |> 
+  ggplot(mapping = aes(x = Species, y = Sepal.Length, fill = Species))+
+  geom_boxplot()
+```
+
+From both the Q-Q plot and the boxplots we can see that there is one outlier in the Virginica set.
+
+Now, to finally see if variances are equal.
+
+```{r iris levene}
+car::leveneTest(Sepal.Length ~ Species, data = iris, center = mean)
+```
+
+From the boxplots we already know that Setosa has lower Sepal Lengths, so we exclude it. The result means that all the variances are not equal among the species.
+
+```{r iris levene2}
+car::leveneTest(Sepal.Length ~ Species, 
+                data = iris |> filter(!Species == "setosa"),
+                center = mean)
+```
+
+Now, it returns a p-value of `r car::leveneTest(Sepal.Length ~ Species, data = iris |> filter(!Species == "setosa"), center = mean)[1,3]` which means that we can assume that the variances are equal and continue.
+
+# Carrying out different T-Tests
+
+## One Sample T-Test
+
+To carry out a t-test we must first isolate a vector we want and run it through the function.
+
+The first example takes all the Sepal.Length data and tests whether the true mean is equal to 6.
+
+```{r ttest1}
+t.test(Sepal.Length ~ 1, data = iris, mu = 6)
+```
+
+Results suggest that the mean of the Sepal-Lengths does not differ significantly from 6 cm.
+
+```{r ttest2}
+t.test(Sepal.Length ~ 1, data = iris, alternative = "less", mu = 6)
+```
+
+There is no evidence at the 5% significance level that the mean is less than 6 cm
+
+Let's test one of them, Virginica
+
+```{r ttest3}
+t.test(iris[iris$Species == "virginica",]$Sepal.Length, mu = 6, alternative = "greater")
+```
+
+We can see that the p-value for this test is `r format(t.test(iris[iris$Species == "virginica",]$Sepal.Length, mu = 6, alternative = "greater")$p.value, scientific = FALSE)` < 0.05. The result is significant and we can say that there is sufficient evidence at the 5% level to suggest that the mean of the Sepal Lengths of the Virginica species is greater than 6 cm.
+
+The `rstatix` package makes it easy to carry out tests in a `dplyr`-friendly way.
+
+```         
+rstatix::t_test(
+  data,
+  formula,
+  comparisons = NULL,
+  ref.group = NULL,
+  p.adjust.method = "holm",
+  paired = FALSE,
+  var.equal = FALSE,
+  alternative = "two.sided",
+  mu = 0,
+  conf.level = 0.95,
+  detailed = FALSE
+  )
+```
+
+### Arguments
+
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `data`            | a data.frame containing the variables in the formula.                                                                                                                                                                                                                                                                   |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `formula`         | a formula of the form `x ~ group` where `x` is a numeric variable giving the data values and `group` is a factor with one or multiple levels giving the corresponding groups. For example, `formula = TP53 ~ cancer_group`.                                                                                             |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `comparisons`     | A list of length-2 vectors specifying the groups of interest to be compared. For example to compare groups "A" vs "B" and "B" vs "C", the argument is as follow: `comparisons = list(c("A", "B"), c("B", "C"))`                                                                                                         |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `ref.group`       | a character string specifying the reference group. If specified, for a given grouping variable, each of the group levels will be compared to the reference group (i.e. control group).                                                                                                                                  |
+|                   |                                                                                                                                                                                                                                                                                                                         |
+|                   | If `ref.group = "all"`, pairwise two sample tests are performed for comparing each grouping variable levels against all (i.e. basemean).                                                                                                                                                                                |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `p.adjust.method` | method to adjust p values for multiple comparisons. Used when pairwise comparisons are performed. Allowed values include "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". If you don't want to adjust the p value (not recommended), use p.adjust.method = "none".                                |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `paired`          | a logical indicating whether you want a paired test.                                                                                                                                                                                                                                                                    |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `var.equal`       | a logical variable indicating whether to treat the two variances as being equal. If `TRUE` then the pooled variance is used to estimate the variance otherwise the Welch (or Satterthwaite) approximation to the degrees of freedom is used.                                                                            |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `alternative`     | a character string specifying the alternative hypothesis, must be one of `"two.sided"` (default), `"greater"` or `"less"`. You can specify just the initial letter.                                                                                                                                                     |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `mu`              | a number specifying an optional parameter used to form the null hypothesis.                                                                                                                                                                                                                                             |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `conf.level`      | confidence level of the interval.                                                                                                                                                                                                                                                                                       |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `detailed`        | logical value. Default is FALSE. If TRUE, a detailed result is shown.                                                                                                                                                                                                                                                   |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `pool.sd`         | logical value used in the function `pairwise_t_test()`. Switch to allow/disallow the use of a pooled SD.                                                                                                                                                                                                                |
+|                   |                                                                                                                                                                                                                                                                                                                         |
+|                   | The `pool.sd = TRUE` (default) calculates a common SD for all groups and uses that for all comparisons (this can be useful if some groups are small). This method does not actually call t.test, so extra arguments are ignored. Pooling does not generalize to paired tests so pool.sd and paired cannot both be TRUE. |
+|                   |                                                                                                                                                                                                                                                                                                                         |
+|                   | If `pool.sd = FALSE` the standard two sample t-test is applied to all possible pairs of groups. This method calls the `t.test()`, so extra arguments, such as `var.equal` are accepted.                                                                                                                                 |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `...`             | other arguments to be passed to the function [`t.test`](http://127.0.0.1:8315/help/library/stats/help/t.test).                                                                                                                                                                                                          |
++-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+```{r dplyr t_test}
+iris |> 
+  group_by(Species) |> 
+  rstatix::t_test(Sepal.Length ~ 1, 
+                  mu = 6,
+                  alternative = "greater") |> 
+  knitr::kable() |> 
+  kableExtra::kable_paper(full_width = TRUE)
+```
+We can quickly see which group yields a significant result, i.e., Virginica.
+
+## Independent T-Test
+
+## Paired Sample T-Test

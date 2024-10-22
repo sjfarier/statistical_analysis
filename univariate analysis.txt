@@ -1,0 +1,52 @@
+### 1. **T-Test (One-Sample, Independent, Paired)**
+   - **Description**: Used to compare the mean of a sample to a known value or between two groups to determine if their means are significantly different.
+   - **Types**:
+     - **One-Sample T-Test**: Compares the sample mean to a known or hypothesized population mean.
+     - **Independent T-Test**: Compares the means of two independent groups.
+     - **Paired T-Test**: Compares means from the same group at two different times (before/after) or under two different conditions.
+
+### 2. **Chi-Squared Test**
+   - **Description**: Assesses the association between categorical variables. It compares the observed frequencies of categorical data with the expected frequencies if no association exists.
+   - **Types**:
+     - **Chi-Squared Test of Independence**: Determines whether two categorical variables are independent.
+     - **Chi-Squared Goodness-of-Fit**: Tests if a sample matches a population with a specific distribution.
+
+### 3. **ANOVA (Analysis of Variance)**
+   - **Description**: Used to compare the means of three or more groups to determine if at least one group mean is different from the others.
+   - **Types**:
+     - **One-Way ANOVA**: Compares means across one independent variable.
+     - **Two-Way ANOVA**: Compares means across two independent variables and can also assess interaction effects.
+
+### 4. **Z-Test**
+   - **Description**: Similar to the T-test, but used when the sample size is large (n > 30) or the population variance is known.
+   - **Types**:
+     - **One-Sample Z-Test**: Tests whether a sample mean differs from a known population mean.
+     - **Two-Sample Z-Test**: Compares the means of two independent groups.
+
+### 5. **Sign Test**
+   - **Description**: A non-parametric test used to determine if there is a significant difference in the median of a single sample or paired samples. It is used when the assumptions of parametric tests are not met.
+
+### 6. **Wilcoxon Signed-Rank Test**
+   - **Description**: A non-parametric alternative to the paired t-test. It compares the ranks of paired observations rather than the means, making it suitable for non-normal distributions.
+
+### 7. **Shapiro-Wilk Test**
+   - **Description**: Used to test for the normality of data. It assesses whether a sample comes from a normally distributed population.
+
+### 8. **Mann-Whitney U Test**
+   - **Description**: A non-parametric test used to compare the differences between two independent groups. It’s an alternative to the independent t-test when the data do not meet the assumptions of normality.
+
+---
+
+### 9. **Kruskal-Wallis Test**
+   - **Description**: A non-parametric alternative to one-way ANOVA used to compare the medians of three or more independent groups when the assumption of normality is violated. It tests whether the distribution of ranks across groups differs significantly.
+
+### 10. **Levene’s Test**
+   - **Description**: This test assesses the equality of variances (homogeneity of variance) across groups. It is crucial for checking one of the assumptions of ANOVA, which requires that variances be equal among the groups being compared.
+
+### 11. **Kolmogorov-Smirnov Test**
+   - **Description**: A non-parametric test that compares a sample distribution with a reference probability distribution. It is used to test for goodness-of-fit (i.e., whether a sample matches a specified distribution) and can also be applied to test for normality.
+
+### 12. **F-Test**
+   - **Description**: Used to compare the variances of two populations. It is often a prerequisite to conducting t-tests and ANOVA, particularly when determining if equal variances can be assumed between groups. A significant F-test result suggests that the variances are unequal.
+
+This list includes both parametric and non-parametric tests, along with techniques to test assumptions about data (e.g., normality, homogeneity of variances), which are crucial in statistical analyses.
