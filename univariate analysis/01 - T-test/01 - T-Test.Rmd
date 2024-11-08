@@ -154,6 +154,95 @@ df |>
   rstatix::shapiro_test(y)
 ```
 
+## Effect Size
+
+```         
+effsize::cohen.d(
+                df$var ~ df$factor, 
+                paired = FALSE,
+                )
+                
+cohen.d(d,f,pooled=TRUE,paired=FALSE,
+                   na.rm=FALSE, mu=0, hedges.correction=FALSE,
+                   conf.level=0.95,noncentral=FALSE, 
+                   within=TRUE, subject=NA, ...)
+```
+
+### Arguments
+
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `d`                 | a numeric vector giving either the data values (if `f` is a factor) or the treatment group values (if `f` is a numeric vector)                                                                                                                                                                                            |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `f`                 | either a factor with two levels or a numeric vector of values, if `NA` a single sample effect size is computed                                                                                                                                                                                                            |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `formula`           | a formula of the form `y ~ f`, where `y` is a numeric variable giving the values and `f` a factor with two levels giving the corresponding groups.                                                                                                                                                                        |
+|                     |                                                                                                                                                                                                                                                                                                                           |
+|                     | If using a paired computation (`paired=TRUE`) it is possible to specify the ids of the subjects using the form `y ~ f | Subject(id)` which allow the correct pairing of the pre and post values.                                                                                                                          |
+|                     |                                                                                                                                                                                                                                                                                                                           |
+|                     | A single sample effect size can be specified with the form `y ~ .`.                                                                                                                                                                                                                                                       |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `data`              | an optional matrix or data frame containing the variables in the formula `formula`. By default the variables are taken from `environment(formula)`.                                                                                                                                                                       |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `pooled`            | a logical indicating whether compute pooled standard deviation or the whole sample standard deviation. If `pooled=TRUE` (default) pooled sd is used, if `pooled=FALSE` the standard deviation of the the control group (the second argument or the one corresponding the the second level of the factor) is used instead. |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `hedges.correction` | logical indicating whether apply the Hedges correction                                                                                                                                                                                                                                                                    |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `conf.level`        | confidence level of the confidence interval                                                                                                                                                                                                                                                                               |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `noncentral`        | logical indicating whether to use non-central t distributions for computing the confidence interval.                                                                                                                                                                                                                      |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `paired`            | a logical indicating whether to consider the values as paired, a warning is issued if `paired==TRUE` with the formula interface and not `| Subject(id)` or with data and factor and no `subject` is provided                                                                                                              |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `within`            | indicates whether to compute the effect size using the within subject variation, taking into consideration the correlation between pre and post samples.                                                                                                                                                                  |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `subject`           | an array indicating the id of the subject for a paired computation, when the formula interface is used it can be indicated in the formula by adding `| Subject(id)`, where `id` is the column in the data that contains and id of the subjects to be paired.                                                              |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `mu`                | numeric indicating the reference mean for single sample effect size.                                                                                                                                                                                                                                                      |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `na.rm`             | logical indicating whether `NA`s should be removed before computation; if `paired==TRUE` then all incomplete pairs are removed.                                                                                                                                                                                           |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `...`               | further arguments to be passed to or from methods.                                                                                                                                                                                                                                                                        |
++---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+## Statistical Power
+
+Compute power of tests or determine parameters to obtain target power (similar to power.t.test)
+
+```         
+pwr.t.test(n = NULL, d = NULL, sig.level = 0.05, power = NULL, 
+    type = c("two.sample", "one.sample", "paired"),
+    alternative = c("two.sided", "less", "greater"))
+```
+
+### Arguments
+
++---------------+---------------------------------------------------------------------------------------------------------------------+
+| `n`           | Number of observations (per sample)                                                                                 |
++---------------+---------------------------------------------------------------------------------------------------------------------+
+| `d`           | Effect size (Cohen's d) - difference between the means divided by the pooled standard deviation                     |
++---------------+---------------------------------------------------------------------------------------------------------------------+
+| `sig.level`   | Significance level (Type I error probability)                                                                       |
++---------------+---------------------------------------------------------------------------------------------------------------------+
+| `power`       | Power of test (1 minus Type II error probability)                                                                   |
++---------------+---------------------------------------------------------------------------------------------------------------------+
+| `type`        | Type of t test : one- two- or paired-samples                                                                        |
++---------------+---------------------------------------------------------------------------------------------------------------------+
+| `alternative` | a character string specifying the alternative hypothesis, must be one of "two.sided" (default), "greater" or "less" |
++---------------+---------------------------------------------------------------------------------------------------------------------+
+
+### Details
+
+Exactly one of the parameters 'd','n','power' and 'sig.level' must be passed as NULL, and that parameter is determined from the others. Notice that the last one has non-NULL default so NULL must be explicitly passed if you want to compute it.
+
+-   **Effect Size (d)**: The difference between the means in terms of standard deviation units. If not known, it can be estimated using the formula: 
+$$d = \frac{\text{mean difference}}{\text{standard deviation of differences}}$$
+
+-   **Significance Level (α)**: Typically set to 0.05.
+
+-   **Sample Size (n)**: The number of paired observations.
+
+-   **Power (1 - β)**: The probability of correctly rejecting the null hypothesis when it is false (e.g., 0.8 or 80%).
+
 ## Outliers
 
 Boxplots can be used to visually detect outliers. Base R and `ggplot2` provide means of doing this.
@@ -412,14 +501,15 @@ The aim now is to see whether a significant difference exists between the first 
 
 Using base R, we'll obtain the first and second temperatures by:
 
-  - `neonatal_hypothermia$t.1`
-  - `neonatal_hypothermia$t.2`
+-   `neonatal_hypothermia$t.1`
+-   `neonatal_hypothermia$t.2`
 
 ```{r paired ttest1}
 car::leveneTest(neonatal_hypothermia$t.1, neonatal_hypothermia$t.2, center = mean)
 
 t.test(neonatal_hypothermia$t.2, neonatal_hypothermia$t.1, alternative = "greater", paired = TRUE, var.equal = TRUE)
 ```
+
 Evidence suggests that a significant temperature increase has taken place. We need to modify how the data is arranged to use `rstatix`. Using `tidyr`'s `pivot_longer` will help us achieve creating two different temperature categories for analysis.
 
 ```{r paired ttest2 prep}
@@ -433,6 +523,7 @@ temperatures <- neonatal_hypothermia |>
 
 temperatures |> sample_n(20) |>  knitr::kable(caption = "Sample of Desired Temperature Data") |> kableExtra::kable_paper("hover", full_width = TRUE)
 ```
+
 Now, we conduct the test. We can see that the normality assumption is violated AND we have many outliers for each category. For the sake of demonstration, we proceed with the t-test anyway and will, in a separate section, make adjustments to see what can be done with the data to properly test it.
 
 ```{r paired ttest2}
@@ -453,5 +544,46 @@ temperatures |> ggplot(
 temperatures |> rstatix::levene_test(temp ~ temperature_reading, center = mean)
 
 temperatures |> rstatix::t_test(temp ~ temperature_reading, paired = TRUE, var.equal = TRUE, alternative = "greater") |> knitr::kable() |> kableExtra::kable_paper(full_width = TRUE)
+
+temperatures |> rstatix::cohens_d(temp ~ temperature_reading, paired = TRUE) |> knitr::kable() |> kableExtra::kable_paper(full_width = TRUE)
 ```
+
 All the evidence, graphs included, point to a significant increase in temperature from t.1 to t.2.
+
+### Estimates of Effect Size and Statistical Power
+
+The effect size for a paired-samples t-test can be calculated by dividing the mean difference by the standard deviation of the difference.
+
+> T-test conventional effect sizes, proposed by Cohen, are: 0.2 (small efect), 0.5 (moderate effect) and 0.8 (large effect) (Cohen 1998, Navarro (2015)). This means that if two groups' means don't differ by 0.2 standard deviations or more, the difference is trivial, even if it is statistically significant.
+
+$$Cohen's\ d\ formula: d = \frac{mean_d}{st.dev_D}$$
+
+A **Power Analysis** to assess the likelihood that your test correctly rejects the null hypothesis when it is false (i.e., avoiding a Type II error).
+
+```{r effect size and power}
+test <- t.test(temp ~ temperature_reading, data = temperatures, paired = TRUE, var.equal = TRUE)
+
+test
+
+effect <- effsize::cohen.d(temperatures$temp ~ temperatures$temperature_reading, paired = TRUE)
+
+effect
+
+pwr::pwr.t.test(n = nrow(neonatal_hypothermia),
+                d = effect$estimate,
+                sig.level = 0.05,
+                type = "paired",
+                alternative = "less"
+                )
+```
+So, we have enough power to tell if one is significantly less than the other but, and we do have enough power to tell that there is a significant difference. It is understood that t.1 is being used as the reference.
+
+```{r alt two sided}
+pwr::pwr.t.test(n = nrow(neonatal_hypothermia),
+                d = effect$estimate,
+                sig.level = 0.05,
+                type = "paired",
+                alternative = "two.sided"
+                )
+```
+

@@ -2121,6 +2121,180 @@ used the <code>shapiro_test</code> function from the
   rstatix::shapiro_test(y)</code></pre>
 </div>
 </div>
+<div id="effect-size" class="section level2">
+<h2>Effect Size</h2>
+<pre><code>effsize::cohen.d(
+                df$var ~ df$factor, 
+                paired = FALSE,
+                )
+                
+cohen.d(d,f,pooled=TRUE,paired=FALSE,
+                   na.rm=FALSE, mu=0, hedges.correction=FALSE,
+                   conf.level=0.95,noncentral=FALSE, 
+                   within=TRUE, subject=NA, ...)</code></pre>
+<div id="arguments" class="section level3">
+<h3>Arguments</h3>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="93%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><code>d</code></td>
+<td>a numeric vector giving either the data values (if <code>f</code> is
+a factor) or the treatment group values (if <code>f</code> is a numeric
+vector)</td>
+</tr>
+<tr class="even">
+<td><code>f</code></td>
+<td>either a factor with two levels or a numeric vector of values, if
+<code>NA</code> a single sample effect size is computed</td>
+</tr>
+<tr class="odd">
+<td><code>formula</code></td>
+<td><p>a formula of the form <code>y ~ f</code>, where <code>y</code> is
+a numeric variable giving the values and <code>f</code> a factor with
+two levels giving the corresponding groups.</p>
+<p>If using a paired computation (<code>paired=TRUE</code>) it is
+possible to specify the ids of the subjects using the form
+<code>y ~ f | Subject(id)</code> which allow the correct pairing of the
+pre and post values.</p>
+<p>A single sample effect size can be specified with the form
+<code>y ~ .</code>.</p></td>
+</tr>
+<tr class="even">
+<td><code>data</code></td>
+<td>an optional matrix or data frame containing the variables in the
+formula <code>formula</code>. By default the variables are taken from
+<code>environment(formula)</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>pooled</code></td>
+<td>a logical indicating whether compute pooled standard deviation or
+the whole sample standard deviation. If <code>pooled=TRUE</code>
+(default) pooled sd is used, if <code>pooled=FALSE</code> the standard
+deviation of the the control group (the second argument or the one
+corresponding the the second level of the factor) is used instead.</td>
+</tr>
+<tr class="even">
+<td><code>hedges.correction</code></td>
+<td>logical indicating whether apply the Hedges correction</td>
+</tr>
+<tr class="odd">
+<td><code>conf.level</code></td>
+<td>confidence level of the confidence interval</td>
+</tr>
+<tr class="even">
+<td><code>noncentral</code></td>
+<td>logical indicating whether to use non-central t distributions for
+computing the confidence interval.</td>
+</tr>
+<tr class="odd">
+<td><code>paired</code></td>
+<td>a logical indicating whether to consider the values as paired, a
+warning is issued if <code>paired==TRUE</code> with the formula
+interface and not <code>| Subject(id)</code> or with data and factor and
+no <code>subject</code> is provided</td>
+</tr>
+<tr class="even">
+<td><code>within</code></td>
+<td>indicates whether to compute the effect size using the within
+subject variation, taking into consideration the correlation between pre
+and post samples.</td>
+</tr>
+<tr class="odd">
+<td><code>subject</code></td>
+<td>an array indicating the id of the subject for a paired computation,
+when the formula interface is used it can be indicated in the formula by
+adding <code>| Subject(id)</code>, where <code>id</code> is the column
+in the data that contains and id of the subjects to be paired.</td>
+</tr>
+<tr class="even">
+<td><code>mu</code></td>
+<td>numeric indicating the reference mean for single sample effect
+size.</td>
+</tr>
+<tr class="odd">
+<td><code>na.rm</code></td>
+<td>logical indicating whether <code>NA</code>s should be removed before
+computation; if <code>paired==TRUE</code> then all incomplete pairs are
+removed.</td>
+</tr>
+<tr class="even">
+<td><code>...</code></td>
+<td>further arguments to be passed to or from methods.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="statistical-power" class="section level2">
+<h2>Statistical Power</h2>
+<p>Compute power of tests or determine parameters to obtain target power
+(similar to power.t.test)</p>
+<pre><code>pwr.t.test(n = NULL, d = NULL, sig.level = 0.05, power = NULL, 
+    type = c(&quot;two.sample&quot;, &quot;one.sample&quot;, &quot;paired&quot;),
+    alternative = c(&quot;two.sided&quot;, &quot;less&quot;, &quot;greater&quot;))</code></pre>
+<div id="arguments-1" class="section level3">
+<h3>Arguments</h3>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="88%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><code>n</code></td>
+<td>Number of observations (per sample)</td>
+</tr>
+<tr class="even">
+<td><code>d</code></td>
+<td>Effect size (Cohen’s d) - difference between the means divided by
+the pooled standard deviation</td>
+</tr>
+<tr class="odd">
+<td><code>sig.level</code></td>
+<td>Significance level (Type I error probability)</td>
+</tr>
+<tr class="even">
+<td><code>power</code></td>
+<td>Power of test (1 minus Type II error probability)</td>
+</tr>
+<tr class="odd">
+<td><code>type</code></td>
+<td>Type of t test : one- two- or paired-samples</td>
+</tr>
+<tr class="even">
+<td><code>alternative</code></td>
+<td>a character string specifying the alternative hypothesis, must be
+one of “two.sided” (default), “greater” or “less”</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="details" class="section level3">
+<h3>Details</h3>
+<p>Exactly one of the parameters ‘d’,‘n’,‘power’ and ‘sig.level’ must be
+passed as NULL, and that parameter is determined from the others. Notice
+that the last one has non-NULL default so NULL must be explicitly passed
+if you want to compute it.</p>
+<ul>
+<li><p><strong>Effect Size (d)</strong>: The difference between the
+means in terms of standard deviation units. If not known, it can be
+estimated using the formula: <span class="math display">\[d =
+\frac{\text{mean difference}}{\text{standard deviation of
+differences}}\]</span></p></li>
+<li><p><strong>Significance Level (α)</strong>: Typically set to
+0.05.</p></li>
+<li><p><strong>Sample Size (n)</strong>: The number of paired
+observations.</p></li>
+<li><p><strong>Power (1 - β)</strong>: The probability of correctly
+rejecting the null hypothesis when it is false (e.g., 0.8 or
+80%).</p></li>
+</ul>
+</div>
+</div>
 <div id="outliers" class="section level2">
 <h2>Outliers</h2>
 <p>Boxplots can be used to visually detect outliers. Base R and
@@ -2163,8 +2337,7 @@ virginica.</p>
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(ggplot2)</code></pre>
 <pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.3.3</code></pre>
-<pre class="r"><code>data(&quot;iris&quot;)
-data(&quot;InsectSprays&quot;)</code></pre>
+<pre class="r"><code>data(&quot;iris&quot;)</code></pre>
 <pre class="r"><code>iris |&gt; sample_n(20) |&gt; 
   knitr::kable(caption = &quot;Sample of the Iris Dataset&quot;) |&gt; 
   kableExtra::kable_paper(&quot;hover&quot;, full_width = TRUE)</code></pre>
@@ -2194,6 +2367,210 @@ Species
 <tbody>
 <tr>
 <td style="text-align:right;">
+5.9
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:right;">
+5.1
+</td>
+<td style="text-align:right;">
+1.8
+</td>
+<td style="text-align:left;">
+virginica
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6.5
+</td>
+<td style="text-align:right;">
+2.8
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:left;">
+versicolor
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7.2
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+1.8
+</td>
+<td style="text-align:left;">
+virginica
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6.1
+</td>
+<td style="text-align:right;">
+2.8
+</td>
+<td style="text-align:right;">
+4.0
+</td>
+<td style="text-align:right;">
+1.3
+</td>
+<td style="text-align:left;">
+versicolor
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7.7
+</td>
+<td style="text-align:right;">
+2.6
+</td>
+<td style="text-align:right;">
+6.9
+</td>
+<td style="text-align:right;">
+2.3
+</td>
+<td style="text-align:left;">
+virginica
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6.1
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+1.4
+</td>
+<td style="text-align:left;">
+versicolor
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5.9
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:right;">
+4.8
+</td>
+<td style="text-align:right;">
+1.8
+</td>
+<td style="text-align:left;">
+versicolor
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4.9
+</td>
+<td style="text-align:right;">
+3.1
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:right;">
+0.2
+</td>
+<td style="text-align:left;">
+setosa
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4.9
+</td>
+<td style="text-align:right;">
+3.1
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:left;">
+setosa
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4.3
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:right;">
+1.1
+</td>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:left;">
+setosa
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5.5
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+1.3
+</td>
+<td style="text-align:right;">
+0.2
+</td>
+<td style="text-align:left;">
+setosa
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6.5
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:right;">
+5.1
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:left;">
+virginica
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
 5.1
 </td>
 <td style="text-align:right;">
@@ -2211,50 +2588,16 @@ versicolor
 </tr>
 <tr>
 <td style="text-align:right;">
-6.7
+6.3
 </td>
 <td style="text-align:right;">
-3.1
+3.3
 </td>
-<td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:left;">
-versicolor
-</td>
-</tr>
-<tr>
 <td style="text-align:right;">
 6.0
 </td>
 <td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:left;">
-versicolor
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-5.8
-</td>
-<td style="text-align:right;">
-1.6
+2.5
 </td>
 <td style="text-align:left;">
 virginica
@@ -2262,27 +2605,10 @@ virginica
 </tr>
 <tr>
 <td style="text-align:right;">
-6.3
+4.4
 </td>
 <td style="text-align:right;">
 2.9
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-1.8
-</td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-3.3
 </td>
 <td style="text-align:right;">
 1.4
@@ -2296,132 +2622,13 @@ setosa
 </tr>
 <tr>
 <td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-3.5
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
-0.6
-</td>
-<td style="text-align:left;">
-setosa
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6.3
+5.6
 </td>
 <td style="text-align:right;">
 2.8
 </td>
 <td style="text-align:right;">
-5.1
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-2.8
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:left;">
-versicolor
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-5.1
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-<td style="text-align:right;">
-0.4
-</td>
-<td style="text-align:left;">
-setosa
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-2.2
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-5.5
-</td>
-<td style="text-align:right;">
-1.8
-</td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-5.2
+4.9
 </td>
 <td style="text-align:right;">
 2.0
@@ -2432,13 +2639,13 @@ virginica
 </tr>
 <tr>
 <td style="text-align:right;">
-4.8
+5.4
 </td>
 <td style="text-align:right;">
 3.4
 </td>
 <td style="text-align:right;">
-1.9
+1.7
 </td>
 <td style="text-align:right;">
 0.2
@@ -2449,33 +2656,33 @@ setosa
 </tr>
 <tr>
 <td style="text-align:right;">
-5.5
+5.0
 </td>
 <td style="text-align:right;">
-2.5
+3.4
 </td>
 <td style="text-align:right;">
-4.0
+1.6
 </td>
 <td style="text-align:right;">
-1.3
+0.4
 </td>
 <td style="text-align:left;">
-versicolor
+setosa
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-6.3
+4.9
+</td>
+<td style="text-align:right;">
+2.4
 </td>
 <td style="text-align:right;">
 3.3
 </td>
 <td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-1.6
+1.0
 </td>
 <td style="text-align:left;">
 versicolor
@@ -2483,50 +2690,16 @@ versicolor
 </tr>
 <tr>
 <td style="text-align:right;">
-6.2
+5.1
 </td>
 <td style="text-align:right;">
-2.8
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-1.8
-</td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-5.6
+3.5
 </td>
 <td style="text-align:right;">
 1.4
 </td>
-<td style="text-align:left;">
-virginica
-</td>
-</tr>
-<tr>
 <td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-0.3
+0.2
 </td>
 <td style="text-align:left;">
 setosa
@@ -2712,7 +2885,7 @@ a <code>dplyr</code>-friendly way.</p>
   conf.level = 0.95,
   detailed = FALSE
   )</code></pre>
-<div id="arguments" class="section level3">
+<div id="arguments-2" class="section level3">
 <h3>Arguments</h3>
 <table>
 <colgroup>
@@ -3172,7 +3345,7 @@ to the data, providing a statistical assessment of whether the observed
 differences are likely to be due to a real effect rather than random
 variability.</p>
 </blockquote>
-<pre class="r"><code>neonatal_hypothermia &lt;- readr::read_csv(&quot;Hypothermia.csv&quot;)</code></pre>
+<pre class="r"><code>neonatal_hypothermia &lt;- readr::read_csv(&quot;data/Hypothermia.csv&quot;)</code></pre>
 <pre><code>## Rows: 200 Columns: 13
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -3234,34 +3407,34 @@ t.6
 <tbody>
 <tr>
 <td style="text-align:right;">
-90
+141
 </td>
 <td style="text-align:right;">
-98579
+96808
 </td>
 <td style="text-align:right;">
-11.00
+6.00
 </td>
 <td style="text-align:right;">
-11.47
+11.45
 </td>
 <td style="text-align:right;">
-3070
+3120
 </td>
 <td style="text-align:right;">
-27
+30
 </td>
 <td style="text-align:right;">
-25
+30
 </td>
 <td style="text-align:right;">
-35.4
+35.5
 </td>
 <td style="text-align:right;">
-36.0
+37.4
 </td>
 <td style="text-align:right;">
-36.8
+NA
 </td>
 <td style="text-align:right;">
 NA
@@ -3275,31 +3448,31 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-27
+135
 </td>
 <td style="text-align:right;">
-98840
+95623
 </td>
 <td style="text-align:right;">
-12.00
+2.00
 </td>
 <td style="text-align:right;">
-13.20
+6.40
 </td>
 <td style="text-align:right;">
-1220
+2780
 </td>
 <td style="text-align:right;">
-29
+30
 </td>
 <td style="text-align:right;">
-28
+30
 </td>
 <td style="text-align:right;">
-35.0
+35.5
 </td>
 <td style="text-align:right;">
-36.0
+36.5
 </td>
 <td style="text-align:right;">
 37.0
@@ -3316,31 +3489,31 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-184
+175
 </td>
 <td style="text-align:right;">
-96596
-</td>
-<td style="text-align:right;">
-5.00
+97967
 </td>
 <td style="text-align:right;">
 9.00
 </td>
 <td style="text-align:right;">
-2900
+11.00
+</td>
+<td style="text-align:right;">
+1750
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-30
+28
 </td>
 <td style="text-align:right;">
 35.8
 </td>
 <td style="text-align:right;">
-37.2
+36.8
 </td>
 <td style="text-align:right;">
 NA
@@ -3357,107 +3530,107 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-21
+87
 </td>
 <td style="text-align:right;">
-95466
+95942
 </td>
 <td style="text-align:right;">
-2.00
+3.00
 </td>
 <td style="text-align:right;">
-21.00
+16.35
 </td>
 <td style="text-align:right;">
-1870
+2820
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+35.4
+</td>
+<td style="text-align:right;">
+36.6
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+187
+</td>
+<td style="text-align:right;">
+99233
+</td>
+<td style="text-align:right;">
+81.01
+</td>
+<td style="text-align:right;">
+9.50
+</td>
+<td style="text-align:right;">
+3000
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
+36.8
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+159
+</td>
+<td style="text-align:right;">
+99283
+</td>
+<td style="text-align:right;">
+81.01
+</td>
+<td style="text-align:right;">
+11.15
+</td>
+<td style="text-align:right;">
+2450
 </td>
 <td style="text-align:right;">
 27
 </td>
 <td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-34.8
-</td>
-<td style="text-align:right;">
-36.0
-</td>
-<td style="text-align:right;">
-36.9
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-66
-</td>
-<td style="text-align:right;">
-97665
-</td>
-<td style="text-align:right;">
-8.00
-</td>
-<td style="text-align:right;">
-22.00
-</td>
-<td style="text-align:right;">
-4600
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-23
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-37.2
-</td>
-<td style="text-align:right;">
-36.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-161
-</td>
-<td style="text-align:right;">
-97335
-</td>
-<td style="text-align:right;">
-7.00
-</td>
-<td style="text-align:right;">
-24.30
-</td>
-<td style="text-align:right;">
-2850
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-27
+24
 </td>
 <td style="text-align:right;">
 35.6
@@ -3480,34 +3653,34 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-117
+114
 </td>
 <td style="text-align:right;">
-97216
+95987
 </td>
 <td style="text-align:right;">
-7.00
+4.00
 </td>
 <td style="text-align:right;">
-7.00
+5.05
 </td>
 <td style="text-align:right;">
-1700
+1450
 </td>
 <td style="text-align:right;">
-28
+30
 </td>
 <td style="text-align:right;">
-27
+32
 </td>
 <td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
-36.4
+36.5
 </td>
 <td style="text-align:right;">
-NA
+37.0
 </td>
 <td style="text-align:right;">
 NA
@@ -3521,7 +3694,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-110
+109
 </td>
 <td style="text-align:right;">
 96589
@@ -3562,157 +3735,34 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-129
+92
 </td>
 <td style="text-align:right;">
-98312
+99324
 </td>
 <td style="text-align:right;">
-10.00
+81.01
 </td>
 <td style="text-align:right;">
-11.06
+9.50
 </td>
 <td style="text-align:right;">
-2560
-</td>
-<td style="text-align:right;">
-29
+3260
 </td>
 <td style="text-align:right;">
 27
 </td>
 <td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-36.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-97729
-</td>
-<td style="text-align:right;">
-8.00
-</td>
-<td style="text-align:right;">
-21.00
-</td>
-<td style="text-align:right;">
-2330
-</td>
-<td style="text-align:right;">
 28
 </td>
 <td style="text-align:right;">
-23
+35.4
 </td>
 <td style="text-align:right;">
-35.6
+36.0
 </td>
 <td style="text-align:right;">
-36.4
-</td>
-<td style="text-align:right;">
-37.1
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-51
-</td>
-<td style="text-align:right;">
-96112
-</td>
-<td style="text-align:right;">
-4.00
-</td>
-<td style="text-align:right;">
-5.30
-</td>
-<td style="text-align:right;">
-3180
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-32
-</td>
-<td style="text-align:right;">
-35.0
-</td>
-<td style="text-align:right;">
-35.8
-</td>
-<td style="text-align:right;">
-36.6
-</td>
-<td style="text-align:right;">
-37.2
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-36
-</td>
-<td style="text-align:right;">
-98476
-</td>
-<td style="text-align:right;">
-11.00
-</td>
-<td style="text-align:right;">
-9.30
-</td>
-<td style="text-align:right;">
-1720
-</td>
-<td style="text-align:right;">
-37
-</td>
-<td style="text-align:right;">
-37
-</td>
-<td style="text-align:right;">
-35.0
-</td>
-<td style="text-align:right;">
-37.2
-</td>
-<td style="text-align:right;">
-NA
+36.8
 </td>
 <td style="text-align:right;">
 NA
@@ -3767,75 +3817,34 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-14
+151
 </td>
 <td style="text-align:right;">
-95760
+95967
 </td>
 <td style="text-align:right;">
-3.00
+4.00
 </td>
 <td style="text-align:right;">
-9.30
+15.40
 </td>
 <td style="text-align:right;">
-3350
-</td>
-<td style="text-align:right;">
-28
-</td>
-<td style="text-align:right;">
-33
-</td>
-<td style="text-align:right;">
-34.2
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-194
-</td>
-<td style="text-align:right;">
-97128
-</td>
-<td style="text-align:right;">
-7.00
-</td>
-<td style="text-align:right;">
-9.45
-</td>
-<td style="text-align:right;">
-3660
+1600
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-27
+31
 </td>
 <td style="text-align:right;">
-35.8
+35.6
 </td>
 <td style="text-align:right;">
-36.7
+36.5
 </td>
 <td style="text-align:right;">
-NA
+36.8
 </td>
 <td style="text-align:right;">
 NA
@@ -3849,34 +3858,31 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-34
+77
 </td>
 <td style="text-align:right;">
-99310
+97252
 </td>
 <td style="text-align:right;">
-81.01
+7.00
 </td>
 <td style="text-align:right;">
-10.49
+19.45
 </td>
 <td style="text-align:right;">
-1650
+1220
 </td>
 <td style="text-align:right;">
 29
 </td>
 <td style="text-align:right;">
-28
+29
 </td>
 <td style="text-align:right;">
-35.0
+35.4
 </td>
 <td style="text-align:right;">
 36.4
-</td>
-<td style="text-align:right;">
-36.8
 </td>
 <td style="text-align:right;">
 37.0
@@ -3887,40 +3893,43 @@ NA
 <td style="text-align:right;">
 NA
 </td>
+<td style="text-align:right;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
-11
+59
 </td>
 <td style="text-align:right;">
-97411
+97601
 </td>
 <td style="text-align:right;">
 8.00
 </td>
 <td style="text-align:right;">
-13.20
+9.18
 </td>
 <td style="text-align:right;">
-1850
+2050
 </td>
 <td style="text-align:right;">
-29
+28
 </td>
 <td style="text-align:right;">
-26
+23
 </td>
 <td style="text-align:right;">
-34.0
+35.2
 </td>
 <td style="text-align:right;">
-36.4
+35.8
 </td>
 <td style="text-align:right;">
-37.6
+36.0
 </td>
 <td style="text-align:right;">
-NA
+36.8
 </td>
 <td style="text-align:right;">
 NA
@@ -3931,31 +3940,69 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-97
+169
 </td>
 <td style="text-align:right;">
-97923
+98880
 </td>
 <td style="text-align:right;">
-9.00
+12.00
 </td>
 <td style="text-align:right;">
-8.55
+23.45
 </td>
 <td style="text-align:right;">
-650
+3840
 </td>
 <td style="text-align:right;">
-32
+29
 </td>
 <td style="text-align:right;">
 28
 </td>
 <td style="text-align:right;">
-35.5
+35.6
 </td>
 <td style="text-align:right;">
-36.2
+36.0
+</td>
+<td style="text-align:right;">
+36.6
+</td>
+<td style="text-align:right;">
+36.8
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+97918
+</td>
+<td style="text-align:right;">
+98.00
+</td>
+<td style="text-align:right;">
+5.20
+</td>
+<td style="text-align:right;">
+2500
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+35.0
 </td>
 <td style="text-align:right;">
 36.8
@@ -3969,31 +4016,116 @@ NA
 <td style="text-align:right;">
 NA
 </td>
+<td style="text-align:right;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
-121
+178
 </td>
 <td style="text-align:right;">
-98556
+99279
 </td>
 <td style="text-align:right;">
-11.00
+81.01
 </td>
 <td style="text-align:right;">
-16.40
+4.40
 </td>
 <td style="text-align:right;">
-2000
+2140
 </td>
 <td style="text-align:right;">
 29
 </td>
 <td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+177
+</td>
+<td style="text-align:right;">
+99097
+</td>
+<td style="text-align:right;">
+81.01
+</td>
+<td style="text-align:right;">
+12.20
+</td>
+<td style="text-align:right;">
+2000
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
+36.3
+</td>
+<td style="text-align:right;">
+37.1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:right;">
+97348
+</td>
+<td style="text-align:right;">
+7.00
+</td>
+<td style="text-align:right;">
+10.00
+</td>
+<td style="text-align:right;">
+1220
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
 26
 </td>
 <td style="text-align:right;">
-35.5
+35.3
 </td>
 <td style="text-align:right;">
 36.0
@@ -4013,34 +4145,75 @@ NA
 </tr>
 <tr>
 <td style="text-align:right;">
-115
+33
 </td>
 <td style="text-align:right;">
-95987
+97601
+</td>
+<td style="text-align:right;">
+8.00
+</td>
+<td style="text-align:right;">
+9.05
+</td>
+<td style="text-align:right;">
+1650
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
+35.6
+</td>
+<td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+126
+</td>
+<td style="text-align:right;">
+96285
 </td>
 <td style="text-align:right;">
 4.00
 </td>
 <td style="text-align:right;">
-5.05
+3.55
 </td>
 <td style="text-align:right;">
-1500
+2400
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-32
+30
 </td>
 <td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
-36.5
+36.6
 </td>
 <td style="text-align:right;">
-36.8
+36.9
 </td>
 <td style="text-align:right;">
 NA
@@ -4115,67 +4288,19 @@ temp
 t.1
 </td>
 <td style="text-align:right;">
+35.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.1
+</td>
+<td style="text-align:right;">
 35.4
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.1
-</td>
-<td style="text-align:right;">
-32.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.1
-</td>
-<td style="text-align:right;">
-35.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.1
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.1
-</td>
-<td style="text-align:right;">
-35.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-37.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-36.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 t.1
 </td>
 <td style="text-align:right;">
@@ -4184,42 +4309,10 @@ t.1
 </tr>
 <tr>
 <td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-37.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 t.1
 </td>
 <td style="text-align:right;">
-35.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-37.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-t.1
-</td>
-<td style="text-align:right;">
-35.0
+35.9
 </td>
 </tr>
 <tr>
@@ -4232,18 +4325,10 @@ t.1
 </tr>
 <tr>
 <td style="text-align:left;">
-t.2
-</td>
-<td style="text-align:right;">
-34.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 t.1
 </td>
 <td style="text-align:right;">
-35.8
+35.6
 </td>
 </tr>
 <tr>
@@ -4256,6 +4341,22 @@ t.2
 </tr>
 <tr>
 <td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+36.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+35.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 t.1
 </td>
 <td style="text-align:right;">
@@ -4267,7 +4368,79 @@ t.1
 t.2
 </td>
 <td style="text-align:right;">
+35.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.1
+</td>
+<td style="text-align:right;">
+35.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+36.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.1
+</td>
+<td style="text-align:right;">
+35.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+35.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+36.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
 36.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.1
+</td>
+<td style="text-align:right;">
+34.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.1
+</td>
+<td style="text-align:right;">
+35.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+35.2
 </td>
 </tr>
 </tbody>
@@ -4363,8 +4536,143 @@ t.2
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>temperatures |&gt; rstatix::cohens_d(temp ~ temperature_reading, paired = TRUE) |&gt; knitr::kable() |&gt; kableExtra::kable_paper(full_width = TRUE)</code></pre>
+<table class=" lightable-paper" style="color: black; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+.y.
+</th>
+<th style="text-align:left;">
+group1
+</th>
+<th style="text-align:left;">
+group2
+</th>
+<th style="text-align:right;">
+effsize
+</th>
+<th style="text-align:right;">
+n1
+</th>
+<th style="text-align:right;">
+n2
+</th>
+<th style="text-align:left;">
+magnitude
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+temp
+</td>
+<td style="text-align:left;">
+t.1
+</td>
+<td style="text-align:left;">
+t.2
+</td>
+<td style="text-align:right;">
+-1.575738
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:left;">
+large
+</td>
+</tr>
+</tbody>
+</table>
 <p>All the evidence, graphs included, point to a significant increase in
 temperature from t.1 to t.2.</p>
+<div id="estimates-of-effect-size-and-statistical-power" class="section level3">
+<h3>Estimates of Effect Size and Statistical Power</h3>
+<p>The effect size for a paired-samples t-test can be calculated by
+dividing the mean difference by the standard deviation of the
+difference.</p>
+<blockquote>
+<p>T-test conventional effect sizes, proposed by Cohen, are: 0.2 (small
+efect), 0.5 (moderate effect) and 0.8 (large effect) (Cohen 1998,
+Navarro (2015)). This means that if two groups’ means don’t differ by
+0.2 standard deviations or more, the difference is trivial, even if it
+is statistically significant.</p>
+</blockquote>
+<p><span class="math display">\[Cohen&#39;s\ d\ formula: d =
+\frac{mean_d}{st.dev_D}\]</span></p>
+<p>A <strong>Power Analysis</strong> to assess the likelihood that your
+test correctly rejects the null hypothesis when it is false (i.e.,
+avoiding a Type II error).</p>
+<pre class="r"><code>test &lt;- t.test(temp ~ temperature_reading, data = temperatures, paired = TRUE, var.equal = TRUE)
+
+test</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  temp by temperature_reading
+## t = -22.284, df = 199, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  -1.1668622 -0.9771378
+## sample estimates:
+## mean difference 
+##          -1.072</code></pre>
+<pre class="r"><code>effect &lt;- effsize::cohen.d(temperatures$temp ~ temperatures$temperature_reading, paired = TRUE)</code></pre>
+<pre><code>## Warning in cohen.d.formula(temperatures$temp ~
+## temperatures$temperature_reading, : Trying to compute paired samples Cohen&#39;s d
+## using formula input. Results may be incorrect if cases do not appear in the
+## same order for both levels of the grouping factor. Use the format &#39;value ~
+## treatment | Subject(id)&#39; to specify a subject id variable.</code></pre>
+<pre class="r"><code>effect</code></pre>
+<pre><code>## 
+## Cohen&#39;s d
+## 
+## d estimate: -1.551556 (large)
+## 95 percent confidence interval:
+##     lower     upper 
+## -1.754751 -1.348362</code></pre>
+<pre class="r"><code>pwr::pwr.t.test(n = nrow(neonatal_hypothermia),
+                d = effect$estimate,
+                sig.level = 0.05,
+                type = &quot;paired&quot;,
+                alternative = &quot;less&quot;
+                )</code></pre>
+<pre><code>## 
+##      Paired t test power calculation 
+## 
+##               n = 200
+##               d = -1.551556
+##       sig.level = 0.05
+##           power = 1
+##     alternative = less
+## 
+## NOTE: n is number of *pairs*</code></pre>
+<p>So, we have enough power to tell if one is significantly less than
+the other but, and we do have enough power to tell that there is a
+significant difference. It is understood that t.1 is being used as the
+reference.</p>
+<pre class="r"><code>pwr::pwr.t.test(n = nrow(neonatal_hypothermia),
+                d = effect$estimate,
+                sig.level = 0.05,
+                type = &quot;paired&quot;,
+                alternative = &quot;two.sided&quot;
+                )</code></pre>
+<pre><code>## 
+##      Paired t test power calculation 
+## 
+##               n = 200
+##               d = 1.551556
+##       sig.level = 0.05
+##           power = 1
+##     alternative = two.sided
+## 
+## NOTE: n is number of *pairs*</code></pre>
+</div>
 </div>
 </div>
 
